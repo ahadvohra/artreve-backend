@@ -1,7 +1,10 @@
 require('dotenv').config();
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+
 
 const contactRoutes = require('./routes/contact');
 const startAProjectRoutes = require('./routes/startAProject');
