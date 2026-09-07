@@ -1,28 +1,5 @@
-const nodemailer = require('nodemailer');
-const dns = require('dns');
-
-let transporter;
-
-async function getTransporter() {
-  if (transporter) return transporter;
-
-  const { address } = await dns.promises.lookup('smtp.gmail.com', { family: 4 });
-
-  transporter = nodemailer.createTransport({
-    host: address,
-    port: 587,
-    secure: false,
-    tls: {
-      servername: 'smtp.gmail.com', // required when connecting via raw IP so the cert still validates
-    },
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
-
-  return transporter;
-}
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function sendNotificationEmail(subject, data) {
   const bodyLines = Object.entries(data.toObject ? data.toObject() : data)
@@ -30,9 +7,8 @@ async function sendNotificationEmail(subject, data) {
     .map(([key, value]) => `${key}: ${value}`)
     .join('\n');
 
-  const t = await getTransporter();
-  await t.sendMail({
-    from: process.env.EMAIL_USER,
+  await resend.emails.send({
+    from: 'onboarding@resend.dev', // works immediately without domain verification
     to: process.env.NOTIFY_EMAIL,
     subject,
     text: bodyLines,
