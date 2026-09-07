@@ -10,8 +10,8 @@ async function getTransporter() {
 
   transporter = nodemailer.createTransport({
     host: address,
-    port: 465,
-    secure: true,
+    port: 587,
+    secure: false,
     tls: {
       servername: 'smtp.gmail.com', // required when connecting via raw IP so the cert still validates
     },
